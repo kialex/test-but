@@ -185,4 +185,19 @@ class Cases
         array_splice($ar[0], $start, $length, $rar[0]);
         return implode($ar[0]);
     }
+
+    /**
+     * @return array
+     */
+    public static function getLabels()
+    {
+        return [
+            self::caseIm => 'Именительный',
+            self::caseRod => 'Родительный',
+            self::caseDat => 'Дательный',
+            self::caseVin => 'Винительный',
+            self::caseTvor => 'Творительный',
+            self::casePred => 'Предложный',
+        ];
+    }
 }

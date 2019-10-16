@@ -3,7 +3,8 @@
 namespace app\controllers;
 
 use app\components\grammar\languages\russian\rules\Cases;
-use app\components\grammar\languages\russian\Word;
+use app\models\Word;
+use app\components\grammar\languages\russian\Word as GrammarWord;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -63,7 +64,46 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $model = new Word();
+
+        if ($model->load(Yii::$app->request->post())) {
+            $model->user_ip = Yii::$app->request->userIP;
+            try {
+                if (!$model->validate()) {
+                    throw new \Exception('Passed data is incorrect');
+                }
+                $word = new GrammarWord($model->word);
+                $case = Yii::createObject(Cases::class);
+                $cases = [
+                    Cases::caseIm => $word->getWord(),
+                    Cases::caseRod => $case->transform($word, Cases::caseRod),
+                    Cases::caseDat => $case->transform($word, Cases::caseDat),
+                    Cases::caseVin => $case->transform($word, Cases::caseVin),
+                    Cases::caseTvor => $case->transform($word, Cases::caseTvor),
+                    Cases::casePred => $case->transform($word, Cases::casePred),
+                ];
+
+                if (!$model->save(false)) {
+                    throw new \Exception('Error was occured trying to handling data!');
+                }
+
+                return $this->render('index', [
+                    'model' => $model,
+                    'cases' => $cases
+                ]);
+
+            } catch (\Exception $e) {
+                Yii::$app->session->addFlash('error', $e->getMessage());
+            }
+
+            return $this->render('index', [
+                'model' => $model
+            ]);
+        }
+
+        return $this->render('index', [
+            'model' => $model
+        ]);
     }
 
     /**
