@@ -12,7 +12,7 @@ class Declension
 
     public $wordEnding = [
         self::FIRST => ['а', 'я', 'и'],
-        self::SECOND => ['о', 'е', 'ы', 'вль', 'поль', 'коль', 'куль', 'прель', 'обль', 'чутль', 'раль', 'варь', 'брь', 'пароль'],
+        self::SECOND => ['о', 'е', 'ы', 'ль', 'варь', 'брь'],
         self::THIRD => ['мя', 'ь'],
     ];
 
@@ -27,12 +27,12 @@ class Declension
         foreach ($this->wordEnding as $declension => $wordEndings) {
             foreach ($wordEndings as $wordEnding) {
                 $length = mb_strlen($wordEnding);
-                if ($word->getWord() == mb_substr($word->getWord(), -1 * abs($length))) {
+                if ($wordEnding == mb_substr($word->getWord(), -1 * abs($length))) {
                     return $declension;
                 }
             }
         }
 
-        throw new \Exception('Unknown declension of word:' . $word->getWord());
+        return self::SECOND;
     }
 }

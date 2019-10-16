@@ -78,23 +78,13 @@ class Cases
                 ]
             ],
             [
-                'compare' => ['о'],
+                'compare' => ['о', 'е'],
                 'to' => [
                     self::caseRod => ['slice' => 1, 'chars' => 'а'],
                     self::caseDat => ['slice' => 1, 'chars' => 'у'],
                     self::caseVin => ['slice' => 0, 'chars' => ''],
                     self::caseTvor => ['slice' => 0, 'chars' => 'м'],
                     self::casePred => ['slice' => 1, 'chars' => 'е']
-                ]
-            ],
-            [
-                'compare' => ['е'],
-                'to' => [
-                    self::caseRod => ['slice' => 1, 'chars' => 'я'],
-                    self::caseDat => ['slice' => 1, 'chars' => 'ю'],
-                    self::caseVin => ['slice' => 0, 'chars' => ''],
-                    self::caseTvor => ['slice' => 0, 'chars' => 'м'],
-                    self::casePred => ['slice' => 0, 'chars' => '']
                 ]
             ],
             [
@@ -108,17 +98,7 @@ class Cases
                 ]
             ],
             [
-                'compare' => ['ий'],
-                'to' => [
-                    self::caseRod => ['slice' => 1, 'chars' => 'я'],
-                    self::caseDat => ['slice' => 1, 'chars' => 'ю'],
-                    self::caseVin => ['slice' => 0, 'chars' => ''],
-                    self::caseTvor => ['slice' => 1, 'chars' => 'ем'],
-                    self::casePred => ['slice' => 1, 'chars' => 'и']
-                ]
-            ],
-            [
-                'compare' => ['ь'],
+                'compare' => ['ий', 'уй', 'ь'],
                 'to' => [
                     self::caseRod => ['slice' => 1, 'chars' => 'я'],
                     self::caseDat => ['slice' => 1, 'chars' => 'ю'],
@@ -170,19 +150,16 @@ class Cases
     public function transform(WordInterface $word, $case)
     {
         $wordLength = mb_strlen($word->getWord());
+        $declension = $this->_declension->detect($word);
+        foreach ($this->rules[$declension] as $rule) {
+            foreach ($rule['compare'] as $compareEnding) {
+                $compareEndingLength = mb_strlen($compareEnding);
 
-        foreach ($this->rules as $declension) {
-            foreach ($declension as $rule) {
-                foreach ($rule['compare'] as $compareEnding) {
-                    $compareEndingLength = mb_strlen($compareEnding);
-
-                    if (max(mb_substr($word->getWord(), $wordLength - $compareEndingLength), 0) == $compareEnding) {
-                        return $this->mb_substr_replace(
-                            $word->getWord(),
-                            $rule['to'][$case]['chars'],
-                            -1 * abs($rule['to'][$case]['slice'])
-                        );
-                    }
+                if (max(mb_substr($word->getWord(), $wordLength - $compareEndingLength), 0) == $compareEnding) {
+                    $start = -1 * abs($rule['to'][$case]['slice']);
+                    return $start
+                        ? $this->mbSubstrReplace($word->getWord(), $rule['to'][$case]['chars'], $start)
+                        : $word->getWord() . $rule['to'][$case]['chars'];
                 }
             }
         }
@@ -190,7 +167,7 @@ class Cases
         throw new \Exception('Invalid word');
     }
 
-    protected  function  mb_substr_replace($str, $repl, $start, $length = null)
+    protected function mbSubstrReplace($str, $repl, $start, $length = null)
     {
         preg_match_all('/./us', $str, $ar);
         preg_match_all('/./us', $repl, $rar);
