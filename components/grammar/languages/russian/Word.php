@@ -29,12 +29,23 @@ class Word extends BaseObject implements WordInterface
 
     /**
      * Word constructor.
-     * @param $word
+     * @param string $word
+     * @throws \Exception
      */
     public function __construct($word)
     {
+        if (mb_strlen($word) == 0) {
+            throw new \Exception('Word should not be empty');
+        }
+
         $this->originalWord = $word;
         $this->word = $word;
+
+        if (!$this->isCorrectLanguage()) {
+            throw new \Exception('Word should contains Russian characters');
+        }
+
+        parent::__construct();
     }
 
     /**
@@ -42,7 +53,7 @@ class Word extends BaseObject implements WordInterface
      */
     public function isCorrectLanguage()
     {
-        if (preg_match('/[^а-Я]+/msiu', $this->word)) {
+        if (preg_match('/[А-Яа-яЁё]/u', $this->word)) {
             return true;
         }
 
@@ -50,11 +61,12 @@ class Word extends BaseObject implements WordInterface
     }
 
     /**
+     * TODO
      * @inheritDoc
      */
     public function isNoun()
     {
-        foreach ($this->groups as $wordEnding) {
+        foreach ($this->groups[self::NOUN] as $wordEnding) {
             $wordEndingLength = mb_strlen($wordEnding);
             if (mb_substr($this->word, -$wordEndingLength) == $wordEnding) {
                 return true;

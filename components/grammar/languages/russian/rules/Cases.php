@@ -110,6 +110,16 @@ class Cases
         ],
         Declension::THIRD => [
             [
+                'compare' => ['мать', 'дочь'],
+                'to' => [
+                    self::caseRod => ['slice' => 1, 'chars' => 'ери'],
+                    self::caseDat => ['slice' => 1, 'chars' => 'ери'],
+                    self::caseVin => ['slice' => 0, 'chars' => ''],
+                    self::caseTvor => ['slice' => 1, 'chars' => 'ерью'],
+                    self::casePred => ['slice' => 1, 'chars' => 'ери']
+                ]
+            ],
+            [
                 'compare' => ['ь'],
                 'to' => [
                     self::caseRod => ['slice' => 1, 'chars' => 'и'],
