@@ -95,10 +95,6 @@ class SiteController extends Controller
             } catch (\Exception $e) {
                 Yii::$app->session->addFlash('error', $e->getMessage());
             }
-
-            return $this->render('index', [
-                'model' => $model
-            ]);
         }
 
         return $this->render('index', [

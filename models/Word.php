@@ -59,4 +59,12 @@ class Word extends ActiveRecord
             'created_at' => 'Дата добавления'
         ];
     }
+
+    /**
+     * @return
+     */
+    public static function find()
+    {
+        return new WordQuery(get_called_class());
+    }
 }
