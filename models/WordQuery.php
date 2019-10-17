@@ -15,7 +15,7 @@ class WordQuery extends ActiveQuery
                 'COUNT(word) as word_count',
                 'FROM_UNIXTIME(`created_at`) as date'
             ])
-            ->having('date > NOW() - INTERVAL ' . $interval . ' DAY')
+            ->having('date > NOW() - INTERVAL ' . $interval . ' DAY AND word_count > 3')
             ->groupBy('word, user_ip')
             ->orderBy(['word_count' => SORT_DESC])
             ->limit($userNumber)

@@ -39,29 +39,29 @@ $this->title = 'My Yii Application';
             </div>
         <?php endif; ?>
 
-        <?php if ($topUsers = Word::find()->topUsers(10, 7)): ?>
-            <div class="col-md-12">
-                <h3>Топ 10 пользователей, которые склоняли слово больше 3 раз за неделю</h3>
-                <table class="table table-bordered table-hover">
-                    <thead>
-                        <th>IP Адресс пользователя</th>
-                        <th>Слово</th>
-                        <th>Количество</th>
-                    </thead>
-                    <tbody>
-                    <?php foreach ($topUsers as $user) : $labels = Cases::getLabels(); ?>
-                        <tr>
-                            <td><?= $user['user_ip']; ?></td>
-                            <td><?= $user['word']; ?></td>
-                            <td><?= $user['word_count']; ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-        <?php else: ?>
-            <h5 class="text-danger">На данный момент нет пользователей.</h5>
-        <?php endif; ?>
+        <div class="col-md-12">
+            <h3>Топ 10 пользователей, которые склоняли слово больше 3 раз за неделю</h3>
+                <?php if ($topUsers = Word::find()->topUsers(10, 7)): ?>
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <th>IP Адресс пользователя</th>
+                            <th>Слово</th>
+                            <th>Количество</th>
+                        </thead>
+                        <tbody>
+                        <?php foreach ($topUsers as $user) : $labels = Cases::getLabels(); ?>
+                            <tr>
+                                <td><?= $user['user_ip']; ?></td>
+                                <td><?= $user['word']; ?></td>
+                                <td><?= $user['word_count']; ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php else: ?>
+                    <h5 class="text-danger">На данный момент нет пользователей.</h5>
+                <?php endif; ?>
+        </div>
 
     </div>
 </div>
